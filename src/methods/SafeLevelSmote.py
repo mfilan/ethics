@@ -17,12 +17,12 @@ class SafeLevelSmote:
         return self._nearest_neighbors.kneighbors([sample], return_distance=False)[0]
 
     def fit_resample(self, data: np.array, y: np.array) -> List[List[float]]:
-        for positive_instance in data[data[:, 2] == 1]:
+        for positive_instance in [val for idx,val in enumerate(data) if y[idx] == 1]:
             k_nearest_neighbors = self._get_neigbors(data, positive_instance)
             n_neighbor_idx: int = random.choice(k_nearest_neighbors)
-            positive_neigbours = [i for i in k_nearest_neighbors if data[i][2] == 1]
+            positive_neigbours = [val for val in k_nearest_neighbors if y[val] == 1]
             slp = len(positive_neigbours)
-            positive_neigbours = [i for i in self._get_neigbors(data, data[n_neighbor_idx]) if data[i][2] == 1]
+            positive_neigbours = [i for i in self._get_neigbors(data, data[n_neighbor_idx]) if y[i] == 1]
             sln = len(positive_neigbours)
             if sln != 0:
                 sl_ratio = slp / sln
@@ -45,4 +45,4 @@ class SafeLevelSmote:
                     dif = data[n_neighbor_idx][atti - 1] - positive_instance[atti - 1]
                     s[atti - 1] = positive_instance[atti - 1] + gap * dif
                 self._d_prim.append(s)
-        return self._d_prim
+        return np.array(self._d_prim), [1 for i in range(len(self._d_prim))]
