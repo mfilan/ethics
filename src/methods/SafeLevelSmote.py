@@ -45,4 +45,7 @@ class SafeLevelSmote:
                     dif = data[n_neighbor_idx][atti - 1] - positive_instance[atti - 1]
                     s[atti - 1] = positive_instance[atti - 1] + gap * dif
                 self._d_prim.append(s)
-        return np.array(self._d_prim), [1 for i in range(len(self._d_prim))]
+
+        X_returned = np.concatenate((data, np.array(self._d_prim)), axis=0)
+        y_returned = np.concatenate((y, np.array([1 for i in range(len(self._d_prim))])), axis=0)
+        return X_returned, y_returned
