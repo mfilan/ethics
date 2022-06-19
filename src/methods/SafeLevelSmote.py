@@ -1,7 +1,7 @@
 from sklearn.neighbors import NearestNeighbors
 import random
 import numpy as np
-from typing import List
+from typing import List, Tuple
 
 
 class SafeLevelSmote:
@@ -16,8 +16,8 @@ class SafeLevelSmote:
             self._nearest_neighbors.fit(data)
         return self._nearest_neighbors.kneighbors([sample], return_distance=False)[0]
 
-    def fit_resample(self, data: np.array, y: np.array) -> List[List[float]]:
-        for positive_instance in [val for idx,val in enumerate(data) if y[idx] == 1]:
+    def fit_resample(self, data: np.array, y: np.array) -> Tuple[np.array, np.array]:
+        for positive_instance in [val for idx, val in enumerate(data) if y[idx] == 1]:
             k_nearest_neighbors = self._get_neigbors(data, positive_instance)
             n_neighbor_idx: int = random.choice(k_nearest_neighbors)
             positive_neigbours = [val for val in k_nearest_neighbors if y[val] == 1]
